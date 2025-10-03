@@ -7,15 +7,11 @@ import HomeScreen from "./src/screens/HomeScreen";
 import PlantDetailScreen from "./src/screens/PlantDetailScreen";
 import FavoritesScreen from "./src/screens/FavoritesScreen";
 import { registerForNotifications } from "./services/notificationsService";
-
 const Stack = createNativeStackNavigator();
-
 export default function App() {
-
- useEffect(() => {
-  registerForNotifications();
- }, []);
-
+	useEffect(() => {
+		registerForNotifications();
+	}, []);
 	return (
 		<FavoriteProvider>
 			<NavigationContainer>
@@ -23,7 +19,11 @@ export default function App() {
 					<Stack.Screen name="Login" component={LoginScreen} />
 					<Stack.Screen name="Home" component={HomeScreen} />
 					<Stack.Screen name="PlantDetail" component={PlantDetailScreen} />
-					<Stack.Screen name="Favorites" component={FavoritesScreen} options={{ title: 'Favoritos' }} />
+					<Stack.Screen
+						name="Favorites"
+						component={FavoritesScreen}
+						options={{ title: "Favoritos" }}
+					/>
 				</Stack.Navigator>
 			</NavigationContainer>
 		</FavoriteProvider>

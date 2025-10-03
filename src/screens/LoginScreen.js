@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	Button,
+	StyleSheet,
+	Alert,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { auth } from "../../services/firebase";
 import {
 	signInWithEmailAndPassword,
@@ -9,6 +18,7 @@ import {
 export default function LoginScreen({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 
 	const getErrorMessage = (errorCode) => {
 		switch (errorCode) {
@@ -51,35 +61,101 @@ export default function LoginScreen({ navigation }) {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Login</Text>
+			<Text style={styles.title}>🌿 Bienvenido</Text>
+			<Text style={styles.subtitle}>Inicia sesión para continuar</Text>
+
 			<TextInput
-				placeholder="Email"
+				placeholder="Correo electrónico"
 				value={email}
 				onChangeText={setEmail}
 				style={styles.input}
+				keyboardType="email-address"
 			/>
-			<TextInput
-				placeholder="Password"
-				value={password}
-				onChangeText={setPassword}
-				secureTextEntry
-				style={styles.input}
-			/>
-			<Button title="Ingresar" onPress={login} />
-			<Button title="Registrarse" onPress={register} />
+			<View style={styles.passwordContainer}>
+				<TextInput
+					placeholder="Contraseña"
+					value={password}
+					onChangeText={setPassword}
+					secureTextEntry={!showPassword}
+					style={styles.passwordInput}
+				/>
+				<TouchableOpacity
+					onPress={() => setShowPassword(!showPassword)}
+					style={styles.eyeButton}
+				>
+					<Ionicons
+						name={showPassword ? "eye-off" : "eye"}
+						size={22}
+						color="#6b7280"
+					/>
+				</TouchableOpacity>
+			</View>
+
+			<TouchableOpacity style={styles.buttonPrimary} onPress={login}>
+				<Text style={styles.buttonText}>Ingresar</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity style={styles.buttonSecondary} onPress={register}>
+				<Text style={styles.buttonText}>Registrarse</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: { flex: 1, justifyContent: "center", padding: 20 },
-	title: { fontSize: 22, marginBottom: 20, textAlign: "center" },
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		padding: 20,
+		backgroundColor: "#f9fafb",
+	},
+	title: {
+		fontSize: 28,
+		fontWeight: "bold",
+		marginBottom: 5,
+		textAlign: "center",
+		color: "#2d6a4f",
+	},
+	subtitle: {
+		fontSize: 16,
+		textAlign: "center",
+		marginBottom: 20,
+		color: "#6b7280",
+	},
 	input: {
 		borderWidth: 1,
 		borderColor: "#ccc",
-		padding: 10,
-		marginBottom: 10,
-		borderRadius: 5,
+		padding: 12,
+		marginBottom: 15,
+		borderRadius: 10,
+		backgroundColor: "#fff",
 	},
-	Button: { marginTop: 10 }
+	passwordContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderWidth: 1,
+		borderColor: "#ccc",
+		borderRadius: 10,
+		backgroundColor: "#fff",
+		marginBottom: 15,
+		paddingRight: 10,
+	},
+	passwordInput: { flex: 1, padding: 12 },
+	eyeButton: { padding: 5 },
+	buttonPrimary: {
+		backgroundColor: "#2d6a4f",
+		padding: 15,
+		borderRadius: 10,
+		marginBottom: 10,
+		alignItems: "center",
+		elevation: 4,
+	},
+	buttonSecondary: {
+		backgroundColor: "#40916c",
+		padding: 15,
+		borderRadius: 10,
+		alignItems: "center",
+		elevation: 4,
+	},
+	buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });

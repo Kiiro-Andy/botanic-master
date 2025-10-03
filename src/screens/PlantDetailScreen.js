@@ -11,6 +11,7 @@ import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import { getPlantDetails } from "../../services/trefle";
 import { useFavorites } from "../../services/FavoriteContext";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function PlantDetailScreen({ route }) {
 	const { plant } = route.params || {};
@@ -80,96 +81,104 @@ export default function PlantDetailScreen({ route }) {
 	};
 
 	return (
-		<ScrollView style={styles.container}>
-			<Text style={styles.title}>
-				{details.common_name || details.scientific_name || "Sin nombre"}
-			</Text>
-			<TouchableOpacity
-				onPress={() => toggleFavorite(plant)}
-				style={{ padding: 10 }}
-			>
-				<Text style={{ fontSize: 18 }}>
-					{isFavorite(plant.id)
-						? "💔 Quitar de favoritos"
-						: "❤️ Agregar a favoritos"}
+		<ScrollView
+			style={styles.container}
+			contentContainerStyle={{ paddingBottom: 30 }}
+		>
+			<View style={styles.header}>
+				<Text style={styles.title}>
+					{details.common_name || details.scientific_name || "Sin nombre"}
 				</Text>
-			</TouchableOpacity>
+				<TouchableOpacity onPress={() => toggleFavorite(plant)}>
+					<MaterialCommunityIcons
+						name={isFavorite(plant.id) ? "heart" : "heart-outline"}
+						size={28}
+						color={isFavorite(plant.id) ? "#d9534f" : "#2d6a4f"}
+					/>
+				</TouchableOpacity>
+			</View>
 
 			{details.image_url && (
 				<Image source={{ uri: details.image_url }} style={styles.image} />
 			)}
 
-			<View style={styles.section}>
+			<View style={styles.card}>
 				<Text style={styles.subtitle}>Detalles generales</Text>
-				<Text>🌿 Nombre científico: {details.scientific_name || "N/A"}</Text>
 				<Text>
-					🌳 Familia:{" "}
+					<Feather name="tag" size={16} /> Nombre científico:{" "}
+					{details.scientific_name || "N/A"}
+				</Text>
+				<Text>
+					<Feather name="grid" size={16} /> Familia:{" "}
 					{details.family_common_name || details.family?.name || "Desconocida"}
 				</Text>
-				<Text>🌱 Género: {details.genus?.name || "Desconocido"}</Text>
-				<Text>⏳ Ciclo de vida: {details.duration || "N/A"}</Text>
 				<Text>
-					📏 Altura promedio:{" "}
+					<Feather name="git-branch" size={16} /> Género:{" "}
+					{details.genus?.name || "Desconocido"}
+				</Text>
+				<Text>
+					<Feather name="clock" size={16} /> Ciclo de vida:{" "}
+					{details.duration || "N/A"}
+				</Text>
+				<Text>
+					<Feather name="arrow-up" size={16} /> Altura promedio:{" "}
 					{main_species.specifications?.average_height?.cm || "N/A"} cm
 				</Text>
 			</View>
 
-			<View style={styles.section}>
+			<View style={styles.card}>
 				<Text style={styles.subtitle}>Cuidados recomendados</Text>
 				<Text>
-					💧 Riego:{" "}
+					<MaterialCommunityIcons name="water" size={16} /> Riego:{" "}
 					{main_species.growth?.atmospheric_humidity != null
-						? `Nivel de humedad necesaria: ${
-								main_species.growth.atmospheric_humidity
-						  }/10 (${interpretLevel(
+						? `${main_species.growth.atmospheric_humidity}/10 (${interpretLevel(
 								main_species.growth.atmospheric_humidity
 						  )})`
 						: "Mantener suelo húmedo"}
 				</Text>
 				<Text>
-					☀️ Luz:{" "}
+					<Feather name="sun" size={16} /> Luz:{" "}
 					{main_species.growth?.light != null
-						? `Nivel de cantidad de sol necesaria: ${
+						? `${main_species.growth.light}/10 (${interpretLevel(
 								main_species.growth.light
-						  }/10 (${interpretLevel(main_species.growth.light)})`
+						  )})`
 						: "Soleado o semisombra"}
 				</Text>
 				<Text>
-					🌡️ Temperatura:{" "}
+					<Feather name="thermometer" size={16} /> Temperatura:{" "}
 					{main_species.growth?.minimum_temperature?.deg_c &&
 					main_species.growth?.maximum_temperature?.deg_c
 						? `Entre ${main_species.growth.minimum_temperature.deg_c}°C y ${main_species.growth.maximum_temperature.deg_c}°C`
 						: "Ideal entre 15°C y 25°C"}
 				</Text>
 				<Text>
-					🌱 Suelo:{" "}
+					<MaterialCommunityIcons name="grass" size={16} /> Suelo:{" "}
 					{main_species.growth?.soil_nutriments != null
-						? `Nivel de nutrientes: ${
+						? `${main_species.growth.soil_nutriments}/10 (${interpretLevel(
 								main_species.growth.soil_nutriments
-						  }/10 (${interpretLevel(main_species.growth.soil_nutriments)})`
+						  )})`
 						: "Bien drenado y fértil"}
 				</Text>
 			</View>
 
-			<View style={styles.section}>
+			<View style={styles.card}>
 				<Text style={styles.subtitle}>Distribución y floración</Text>
-				{details.distribution?.native?.length > 0 && (
-					<Text>
-						🌍 Nativa de: {details.distribution.native.join(", ")} || "N/A"{" "}
-					</Text>
-				)}
-				{details.flowering_months && (
-					<Text>
-						🌸 Época de floración: {details.flowering_months} || "N/A"{" "}
-					</Text>
-				)}
-				{details.flower_color && (
-					<Text>🎨 Color de flor: {details.flower_color} || "N/A" </Text>
-				)}
+				<Text>
+					<MaterialCommunityIcons name="pin" size={16} /> Nativa de:{" "}
+					{details.distribution?.native?.join(", ") || "N/A"}
+				</Text>
+				<Text>
+					<MaterialCommunityIcons name="flower" size={16} /> Época de floración:{" "}
+					{details.flowering_months || "N/A"}
+				</Text>
+				<Text>
+					<MaterialCommunityIcons name="palette" size={16} /> Color de flor:{" "}
+					{details.flower_color || "N/A"}
+				</Text>
 			</View>
 
 			{location && (
-				<View style={styles.mapContainer}>
+				<View style={styles.card}>
 					<Text style={styles.subtitle}>Tu ubicación</Text>
 					<MapView
 						style={styles.map}
@@ -194,16 +203,32 @@ export default function PlantDetailScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-	container: { flex: 1, padding: 20, marginTop: 20, backgroundColor: "#fff" },
+	container: { flex: 1, padding: 20, backgroundColor: "#f9fafb" },
+	centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+	errorText: { color: "#d9534f", fontSize: 18 },
 	title: {
 		fontSize: 24,
 		fontWeight: "bold",
-		marginBottom: 15,
 		textAlign: "center",
+		marginBottom: 10,
+	},
+	header: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 15,
 	},
 	image: { width: "100%", height: 250, borderRadius: 10, marginBottom: 20 },
-	section: { marginBottom: 20 },
 	subtitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-	mapContainer: { height: 250, marginBottom: 20 },
-	map: { flex: 1, borderRadius: 10 },
+	card: {
+		backgroundColor: "#fff",
+		padding: 15,
+		borderRadius: 10,
+		marginBottom: 15,
+		elevation: 3,
+		shadowColor: "#000",
+		shadowOpacity: 0.1,
+		shadowRadius: 4,
+	},
+	map: { flex: 1, height: 250, borderRadius: 10 },
 });
