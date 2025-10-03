@@ -10,24 +10,24 @@ export default function LoginScreen({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	  const getErrorMessage = (errorCode) => {
-    switch (errorCode) {
-      case "auth/invalid-credential":
-        return "Correo o contraseña incorrectos.";
-      case "auth/user-not-found":
-        return "Usuario no encontrado.";
-      case "auth/email-already-in-use":
-        return "Este correo ya está registrado.";
-      case "auth/invalid-email":
-        return "Formato de correo inválido.";
-      case "auth/weak-password":
-        return "La contraseña debe tener al menos 6 caracteres.";
-      case "auth/missing-password":
-        return "Debes ingresar una contraseña.";
-      default:
-        return "Ocurrió un error. Intenta de nuevo.";
-    }
-  };
+	const getErrorMessage = (errorCode) => {
+		switch (errorCode) {
+			case "auth/invalid-credential":
+				return "Correo o contraseña incorrectos.";
+			case "auth/user-not-found":
+				return "Usuario no encontrado.";
+			case "auth/email-already-in-use":
+				return "Este correo ya está registrado.";
+			case "auth/invalid-email":
+				return "Formato de correo inválido.";
+			case "auth/weak-password":
+				return "La contraseña debe tener al menos 6 caracteres.";
+			case "auth/missing-password":
+				return "Debes ingresar una contraseña.";
+			default:
+				return "Ocurrió un error. Intenta de nuevo.";
+		}
+	};
 
 	const login = async () => {
 		try {
@@ -45,7 +45,7 @@ export default function LoginScreen({ navigation }) {
 			navigation.replace("Home");
 		} catch (error) {
 			console.log("Error registro:", error);
-			 Alert.alert("Error al registrarse", getErrorMessage(error.code));
+			Alert.alert("Error al registrarse", getErrorMessage(error.code));
 		}
 	};
 
@@ -81,4 +81,5 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		borderRadius: 5,
 	},
+	Button: { marginTop: 10 }
 });

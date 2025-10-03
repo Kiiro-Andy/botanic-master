@@ -11,6 +11,10 @@ import * as Location from "expo-location";
 import { getWeather } from "../../services/weather";
 import { getPlantsByHumidity } from "../../services/trefle";
 
+import { auth } from "../../services/firebase";
+import { signOut } from "firebase/auth";
+import { Button } from "react-native";
+
 export default function HomeScreen({ navigation }) {
 	const [weather, setWeather] = useState(null);
 	const [plants, setPlants] = useState([]);
@@ -53,9 +57,37 @@ export default function HomeScreen({ navigation }) {
 		fetchData();
 	}, []);
 
+	const handleLogout = async () => {
+		try {
+			await signOut(auth);
+			navigation.replace("Login");
+		} catch (error) {
+			console.error("Error al cerrar sesión:", error);
+		}
+	};
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Clima y Plantas</Text>
+			{/* Mostrar usuario logueado */}
+			{auth.currentUser && (
+				<Text style={styles.userText}>Usuario: {auth.currentUser.email}</Text>
+			)}
+
+			{/* Botones de acción */}
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "space-between",
+					marginBottom: 10,
+				}}
+			>
+				<Button
+					title="Mis Favoritos"
+					onPress={() => navigation.navigate("Favorites")}
+				/>
+				<Button title="Cerrar Sesión" onPress={handleLogout} color="#d9534f" />
+			</View>
 			{errorMsg ? (
 				<Text>{errorMsg}</Text>
 			) : weather ? (
