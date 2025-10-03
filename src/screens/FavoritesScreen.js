@@ -5,7 +5,7 @@ import {
 	FlatList,
 	Image,
 	TouchableOpacity,
-	StyleSheet,
+	StyleSheet, ActivityIndicator
 } from "react-native";
 import { auth } from "../../services/firebase";
 import { getFavorites } from "../../services/favoritesService";
@@ -14,6 +14,7 @@ import { getPlantDetails } from "../../services/trefle";
 
 export default function FavoritesScreen({ navigation }) {
 	const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		let mounted = true;

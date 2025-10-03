@@ -5,7 +5,7 @@ import { FavoriteProvider } from "./services/FavoriteContext";
 import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import PlantDetailScreen from "./src/screens/PlantDetailScreen";
-import FavoritesScreen from "./src/screens/PlantDetailScreen";
+import FavoritesScreen from "./src/screens/FavoritesScreen";
 
 const Stack = createNativeStackNavigator();
 
