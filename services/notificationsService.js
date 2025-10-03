@@ -42,10 +42,11 @@ export async function notifyWeatherPlant(plant) {
 }
 
 export function handleNotificationResponse(navigation) {
-  Notifications.addNotificationResponseReceivedListener((response) => {
-    const { plantName, type } = response.notification.request.content.data;
+  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+    const { plantName} = response.notification.request.content.data;
     if (plantName) {
       navigation.navigate("PlantDetail", { plant: { common_name: plantName } });
     }
   });
+  return subscription;
 }

@@ -14,6 +14,8 @@ import { getPlantsByHumidity } from "../../services/trefle";
 import { auth } from "../../services/firebase";
 import { signOut } from "firebase/auth";
 import { Button } from "react-native";
+import { notifyWeatherPlant } from "../../services/notificationsService";
+import { handleNotificationResponse } from "../../services/notificationsService";
 
 export default function HomeScreen({ navigation }) {
 	const [weather, setWeather] = useState(null);
@@ -23,6 +25,7 @@ export default function HomeScreen({ navigation }) {
 	const [loadingPlants, setLoadingPlants] = useState(true);
 
 	useEffect(() => {
+
 		const fetchData = async () => {
 			setLoadingWeather(true);
 			setLoadingPlants(true);
@@ -44,7 +47,14 @@ export default function HomeScreen({ navigation }) {
 					const hum = clima.main.humidity;
 					const data = await getPlantsByHumidity(hum - 20, hum + 20);
 					setPlants(data || []);
+					
+					if (data && data.length > 0) {
+          			const recommended = data[0];
+          			notifyWeatherPlant(recommended.common_name || recommended.scientific_name);
+       			 }	
+
 				}
+      
 				setLoadingPlants(false);
 			} catch (error) {
 				console.error(error);
