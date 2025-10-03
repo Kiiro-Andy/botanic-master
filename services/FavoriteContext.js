@@ -48,7 +48,7 @@ export function FavoriteProvider({ children }) {
         // addFavorite devuelve lo que realmente se guardó
         const saved = await addFavorite(user.uid, plant);
         setFavorites((prev) => [...prev, saved]);
-        notifyFavoritePlant(plant.common_name || "Planta");
+        notifyFavoritePlant(plant);
       }
     } catch (error) {
       console.error("toggleFavorite error:", error);

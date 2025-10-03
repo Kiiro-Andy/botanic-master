@@ -25,6 +25,10 @@ export default function HomeScreen({ navigation }) {
 	const [loadingPlants, setLoadingPlants] = useState(true);
 
 	useEffect(() => {
+		const subscription = handleNotificationResponse(navigation);
+		return () => subscription.remove();
+		}, []);
+	useEffect(() => {
 
 		const fetchData = async () => {
 			setLoadingWeather(true);
@@ -50,7 +54,7 @@ export default function HomeScreen({ navigation }) {
 					
 					if (data && data.length > 0) {
           			const recommended = data[0];
-          			notifyWeatherPlant(recommended.common_name || recommended.scientific_name);
+          			notifyWeatherPlant(recommended);
        			 }	
 
 				}
