@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getFavorites, addFavorite, removeFavorite } from "./favoritesService";
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
+import { notifyFavoritePlant } from "./notificationsService";
+
 
 const FavoriteContext = createContext();
 
@@ -46,6 +48,7 @@ export function FavoriteProvider({ children }) {
         // addFavorite devuelve lo que realmente se guardó
         const saved = await addFavorite(user.uid, plant);
         setFavorites((prev) => [...prev, saved]);
+        notifyFavoritePlant(plant.common_name || "Planta");
       }
     } catch (error) {
       console.error("toggleFavorite error:", error);
