@@ -9,51 +9,12 @@ import {
 	ActivityIndicator,
 	Alert,
 } from "react-native";
-import { auth } from "../../services/firebase";
-import { getFavorites, removeFavorite } from "../../services/favoritesService";
-import { onAuthStateChanged } from "firebase/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFavorites } from "../../services/FavoriteContext";
 
 export default function FavoritesScreen({ navigation }) {
-	const [favorites, setFavorites] = useState([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		let mounted = true;
-
-		const fetchFavorites = async (uid) => {
-			try {
-				const favs = await getFavorites(uid); // Trae datos guardados en Firestore
-				if (mounted) {
-					setFavorites(favs || []);
-					setLoading(false);
-				}
-			} catch (e) {
-				console.error("Error cargando favoritos:", e);
-				if (mounted) {
-					setFavorites([]);
-					setLoading(false);
-				}
-			}
-		};
-
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
-				fetchFavorites(user.uid);
-			} else {
-				setFavorites([]);
-				setLoading(false);
-			}
-		});
-
-		return () => {
-			mounted = false;
-			unsubscribe();
-		};
-	}, []);
-
-	const { toggleFavorite } = useFavorites();
+	const { favorites, toggleFavorite, loading } = useFavorites();
+	
 
 	const handleRemove = (plant) => {
 		Alert.alert(
@@ -67,7 +28,6 @@ export default function FavoritesScreen({ navigation }) {
 					onPress: async () => {
 						try {
 							await toggleFavorite(plant);
-							setFavorites((prev) => prev.filter((p) => p.id !== plant.id));
 						} catch (e) {
 							console.error("Error al eliminar favorito:", e);
 						}
@@ -85,7 +45,7 @@ export default function FavoritesScreen({ navigation }) {
 		);
 	}
 
-	if (favorites.length === 0) {
+	if (!favorites || favorites.length === 0) {
 		return (
 			<View style={styles.centered}>
 				<Text style={styles.noFavText}>
