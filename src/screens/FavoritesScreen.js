@@ -13,6 +13,7 @@ import { auth } from "../../services/firebase";
 import { getFavorites, removeFavorite } from "../../services/favoritesService";
 import { onAuthStateChanged } from "firebase/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useFavorites } from "../../services/FavoriteContext";
 
 export default function FavoritesScreen({ navigation }) {
 	const [favorites, setFavorites] = useState([]);
@@ -52,7 +53,9 @@ export default function FavoritesScreen({ navigation }) {
 		};
 	}, []);
 
-	const handleRemove = (plantId) => {
+	const { toggleFavorite } = useFavorites();
+
+	const handleRemove = (plant) => {
 		Alert.alert(
 			"Quitar favorito",
 			"¿Seguro que quieres eliminar esta planta de tus favoritos?",
@@ -63,8 +66,8 @@ export default function FavoritesScreen({ navigation }) {
 					style: "destructive",
 					onPress: async () => {
 						try {
-							await removeFavorite(auth.currentUser.uid, plantId);
-							setFavorites((prev) => prev.filter((p) => p.id !== plantId));
+							await toggleFavorite(plant);
+							setFavorites((prev) => prev.filter((p) => p.id !== plant.id));
 						} catch (e) {
 							console.error("Error al eliminar favorito:", e);
 						}
@@ -117,7 +120,7 @@ export default function FavoritesScreen({ navigation }) {
 									{item.common_name || item.scientific_name || "Sin nombre"}
 								</Text>
 							</View>
-							<TouchableOpacity onPress={() => handleRemove(item.id)}>
+							<TouchableOpacity onPress={() => handleRemove(item)}>
 								<MaterialCommunityIcons
 									name="heart-off"
 									size={24}
