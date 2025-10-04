@@ -7,6 +7,7 @@ import {
 	Image,
 	TouchableOpacity,
 	ActivityIndicator,
+	Alert
 } from "react-native";
 import * as Location from "expo-location";
 import { getWeather } from "../../services/weather";
@@ -66,13 +67,26 @@ export default function HomeScreen({ navigation }) {
 		};
 		fetchData();
 	}, []);
-	const handleLogout = async () => {
-		try {
-			await signOut(auth);
-			navigation.replace("Login");
-		} catch (error) {
-			console.error("Error al cerrar sesión:", error);
-		}
+	const handleLogout = () => {
+		Alert.alert(
+			"Cerrar sesión",
+			"¿Seguro que quieres cerrar sesión?",
+			[
+				{ text: "Cancelar", style: "cancel" },
+				{ 
+					text: "Sí", 
+					style: "destructive",
+					onPress: async () => {
+						try {
+							await signOut(auth);
+							navigation.replace("Login");
+						} catch (error) {
+							console.error("Error al cerrar sesión:", error);
+						}
+					}
+				}
+			]
+		);
 	};
 	return (
 		<View style={styles.container}>
